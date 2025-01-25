@@ -1,11 +1,11 @@
 {
-    "name": "sentixtech/websoket",
+    "name": "sentixtech/websocket",
     "description": "A pure PHP WebSocket server implementation with advanced features",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Sentixtech\\Websoket\\": "src/"
+            "Sentixtech\\Websocket\\": "src/"
         }
     },
     "authors": [
@@ -22,7 +22,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Sentixtech\\Websoket\\WebsoketServiceProvider"
+                "Sentixtech\\Websocket\\WebsoketServiceProvider"
             ]
         }
     },
