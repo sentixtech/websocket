@@ -4,7 +4,7 @@
     "description": "A pure PHP WebSocket server implementation with advanced features",
     "type": "library",
     "license": "MIT",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "repositories": [
         {
