@@ -351,13 +351,48 @@ If automatic discovery is disabled, add the service provider to your `config/app
 ],
 ```
 
-### Publishing Configuration
+### Configuration Publishing
 
-Publish the package configuration file using Artisan:
+Use Artisan commands to publish and manage WebSocket configuration:
 
 ```bash
-# Publish configuration file
+# Publish WebSocket configuration file
 php artisan vendor:publish --provider="Sentixtech\Websoket\WebsoketServiceProvider" --tag="config"
+
+# Publish WebSocket service provider
+php artisan make:provider WebsocketServiceProvider
+
+# Generate WebSocket configuration
+php artisan websocket:generate-config
+
+# Start WebSocket server
+php artisan websocket:start
+
+# Stop WebSocket server
+php artisan websocket:stop
+
+# Restart WebSocket server
+php artisan websocket:restart
+
+# Check WebSocket server status
+php artisan websocket:status
+```
+
+### Environment Configuration
+
+Add WebSocket settings to your `.env` file:
+
+```env
+# WebSocket Server Configuration
+WEBSOCKET_HOST=0.0.0.0
+WEBSOCKET_PORT=8080
+WEBSOCKET_SSL=false
+WEBSOCKET_MAX_CLIENTS=1000
+WEBSOCKET_DEBUG=false
+
+# Redis Configuration for Distributed Messaging
+WEBSOCKET_REDIS_HOST=127.0.0.1
+WEBSOCKET_REDIS_PORT=6379
 ```
 
 ### Configuration File
