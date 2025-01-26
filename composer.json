@@ -15,10 +15,7 @@
     "autoload": {
         "psr-4": {
             "Sentixtech\\Websocket\\": "src/"
-        },
-        "files": [
-            "src/WebsocketServiceProvider.php"
-        ]
+        }
     },
     "authors": [
         {
