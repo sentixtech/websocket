@@ -1,78 +1,539 @@
-# Sentixtech WebSocket Server for PHP
+# Sentixtech WebSocket Server
 
-A powerful, easy-to-use WebSocket server implementation for PHP applications.
+## 🚀 Overview
 
-## Overview
+A powerful, flexible, and easy-to-use WebSocket server implementation for PHP applications. This package provides a robust solution for real-time communication, supporting various use cases from simple chat applications to complex real-time systems.
 
-This package provides a lightweight, dependency-free WebSocket server for PHP applications, supporting various server environments including Apache, XAMPP, and cPanel.
+## ✨ Key Features
 
-## Features
+- 🔌 Pure PHP WebSocket Implementation
+- 🛡️ Secure Connection Handling
+- 📡 Flexible Channel Management
+- 🎉 Event-Driven Architecture
+- 🔒 Authentication Support
+- 📊 Performance Optimized
 
-- 🚀 Zero Dependencies
-- 🔒 Secure SSL/TLS Support
-- 🎯 Custom Channel Management
-- ⚡ High-Performance WebSocket Server
-- 📝 Framework Agnostic
+## 📦 Installation
 
-## Requirements
-
-- PHP 7.4+
-- Composer
-
-## Installation
-
-Install the package via Composer:
+### Composer Installation
 
 ```bash
 composer require sentixtech/websocket
 ```
 
-## Composer Configuration
+### Composer Configuration
 
-Add the following to your `composer.json`:
+Add to your `composer.json`:
 
 ```json
 {
-    "name": "your-vendor/your-project",
-    "type": "project",
     "require": {
         "sentixtech/websocket": "^1.0"
-    },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "./packages/websocket"
-        }
-    ]
+    }
 }
 ```
 
-## Quick Start
+## 🛠️ Basic Setup
 
-### Server Setup
+### Server Initialization
 
 ```php
 <?php
 use Sentixtech\Websocket\WebsocketServer;
 
-$server = new WebsocketServer();
-$server->createChannel('chat');
+// Create WebSocket Server
+$server = new WebsocketServer('0.0.0.0', 8080);
+
+// Start the server
 $server->start();
 ```
 
-## Documentation
+## 🌐 Channel Management
 
-For detailed documentation, configuration options, and advanced usage, please refer to our [documentation](https://github.com/sentixtech/websocket/docs).
+### Creating Channels
 
-## Contributing
+```php
+// Public Channel (Open to all)
+$server->createChannel('global_chat', [
+    'maxClients' => 1000,
+    'persistent' => true
+]);
 
-Contributions are welcome! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+// Private Channel (Restricted Access)
+$server->createChannel('private_room', [
+    'maxClients' => 10,
+    'private' => true,
+    'auth' => true
+]);
+```
 
-## License
+## 🎈 Event Handling
 
-MIT License. See [LICENSE](LICENSE) for more information.
+### Global Events
 
-## Support
+```php
+// Listen to global events
+$server->on('connection.open', function($data, $socket) {
+    echo "New client connected!";
+});
 
-- GitHub Issues: [https://github.com/sentixtech/websocket/issues](https://github.com/sentixtech/websocket/issues)
+$server->on('message.received', function($data, $socket) {
+    // Process incoming messages
+});
+```
+
+### Channel-Specific Events
+
+```php
+// Channel-specific event listener
+$server->on('message.received', function($data, $socket, $channel) {
+    // Handle messages for a specific channel
+}, 'global_chat');
+```
+
+## 🔐 Authentication
+
+### User Authentication
+
+```php
+// Define authentication method
+$server->setAuthenticator(function($credentials) {
+    // Validate user credentials
+    // Return true if valid, false otherwise
+    return $this->validateUser($credentials);
+});
+
+// Authenticate client when connecting
+$client->authenticate([
+    'username' => 'john_doe',
+    'token' => 'user_access_token'
+]);
+```
+
+## 💬 Chat Application Example
+
+### Complete Chat Server Implementation
+
+```php
+<?php
+use Sentixtech\Websocket\WebsocketServer;
+
+class ChatServer {
+    private $server;
+
+    public function __construct() {
+        $this->server = new WebsocketServer('0.0.0.0', 8080);
+        
+        // Create chat channels
+        $this->server->createChannel('general', [
+            'maxClients' => 500,
+            'persistent' => true
+        ]);
+
+        $this->server->createChannel('support', [
+            'maxClients' => 50,
+            'private' => true,
+            'auth' => true
+        ]);
+
+        // Handle connection events
+        $this->server->on('connection.open', function($data, $socket) {
+            $this->server->broadcast('A new user joined!', 'general');
+        });
+
+        // Handle message events
+        $this->server->on('message.received', function($data, $socket) {
+            $this->processMessage($data, $socket);
+        });
+    }
+
+    private function processMessage($data, $socket) {
+        // Process and broadcast messages
+        $this->server->broadcast($data['message'], $data['channel']);
+    }
+
+    public function start() {
+        $this->server->start();
+    }
+}
+
+// Run the chat server
+$chatServer = new ChatServer();
+$chatServer->start();
+```
+
+## 💬 Clustered Chat Application Example
+
+### Server-Side Cluster Implementation
+
+The `ChatClusterManager` demonstrates a complete WebSocket chat cluster with:
+- Multiple server nodes
+- Load balancing
+- Distributed messaging
+- Cross-node communication
+
+#### Key Features
+- Round-robin node selection
+- Redis-based message distribution
+- Channel management
+- Basic authentication
+- Error handling
+
+```php
+<?php
+use Sentixtech\Websoket\Examples\ChatClusterManager;
+
+// Create a cluster with three nodes
+$clusterManager = new ChatClusterManager([
+    ['host' => '0.0.0.0', 'port' => 8080],
+    ['host' => '0.0.0.0', 'port' => 8081],
+    ['host' => '0.0.0.0', 'port' => 8082]
+]);
+
+// Start the entire cluster
+$clusterManager->startCluster();
+```
+
+### Client-Side Implementation
+
+The `ChatClusterClient` provides a robust WebSocket client with:
+- Automatic node selection
+- Reconnection logic
+- Channel subscription
+- Message handling
+
+```javascript
+// Initialize chat client
+const chatClient = new ChatClusterClient([
+    { host: 'server1.example.com', port: 8080 },
+    { host: 'server2.example.com', port: 8081 },
+    { host: 'server3.example.com', port: 8082 }
+], 'JohnDoe');
+
+// Connect and interact
+chatClient.connect();
+chatClient.subscribeToChannel('general');
+chatClient.sendMessage('general', 'Hello, clustered chat!');
+```
+
+### Cluster Architecture
+
+1. **Load Balancing**: Distribute connections across multiple nodes
+2. **Horizontal Scaling**: Add more nodes to increase capacity
+3. **Fault Tolerance**: Nodes can be added/removed dynamically
+4. **Shared State**: Redis enables cross-node communication
+
+### Performance Considerations
+
+- Use connection pooling
+- Implement sticky sessions
+- Monitor node health
+- Set appropriate connection limits
+
+### Recommended Infrastructure
+
+- Load Balancer (Nginx/HAProxy)
+- Redis for message distribution
+- Monitoring and logging
+- Auto-scaling capabilities
+
+### Deployment Strategies
+
+1. Kubernetes/Docker for containerization
+2. Cloud provider managed WebSocket services
+3. Custom load balancing solutions
+4. Serverless WebSocket platforms
+
+### Limitations and Future Improvements
+
+- Implement more advanced load balancing algorithms
+- Add node health checks
+- Create a management dashboard
+- Enhance authentication mechanisms
+
+### When to Use Clustering
+
+- High-traffic real-time applications
+- Global chat systems
+- Multiplayer game servers
+- Live collaboration tools
+- IoT device communication platforms
+
+### Scalability Roadmap
+
+1. Basic single-server implementation
+2. Manual clustering (current example)
+3. Native clustering support
+4. Advanced distributed architecture
+
+## 🔧 Advanced Configuration
+
+### Server Options
+
+```php
+$server->setMaxClients(1000)  // Maximum concurrent connections
+       ->setPingInterval(30)  // Ping interval in seconds
+       ->enableDebug();       // Enable debug mode
+```
+
+## 📡 Supported Message Types
+
+- `subscribe`: Join a channel
+- `unsubscribe`: Leave a channel
+- `publish`: Send a message to a channel
+- `event`: Custom event handling
+
+## 🛡️ Security Features
+
+- SSL/TLS Support
+- IP Whitelisting
+- Rate Limiting
+- Message Size Control
+- Origin Restrictions
+
+## 📊 Performance Optimization
+
+- Non-blocking I/O
+- Connection Pooling
+- Efficient Memory Management
+- Configurable Client Limits
+
+## 🚧 Requirements
+
+- PHP 7.4+
+- Composer
+- OpenSSL (for secure connections)
+
+## 📝 License
+
+MIT License
+
+## 🤝 Contributing
+
+Contributions are welcome! Please submit pull requests or open issues on our GitHub repository.
+
+## 📞 Support
+
+- GitHub Issues
 - Email: support@sentixtech.com
+
+## 🌟 Use Cases
+
+1. Real-time Chat Applications
+2. Live Notifications
+3. Collaborative Tools
+4. Gaming Servers
+5. IoT Device Communication
+6. Live Dashboards
+7. Stock Market Trackers
+
+## 🔍 Troubleshooting
+
+- Ensure proper firewall configurations
+- Check PHP socket extension
+- Verify SSL certificates for secure connections
+- Monitor server logs for detailed diagnostics
+
+## 🔧 Laravel Service Provider Configuration
+
+### Automatic Package Discovery
+
+Laravel automatically discovers and registers the WebSocket service provider. No manual configuration is required.
+
+### Manual Service Provider Registration
+
+If automatic discovery is disabled, add the service provider to your `config/app.php`:
+
+```php
+'providers' => [
+    // Other Service Providers
+    Sentixtech\Websoket\WebsoketServiceProvider::class,
+],
+```
+
+### Publishing Configuration
+
+Publish the package configuration file using Artisan:
+
+```bash
+# Publish configuration file
+php artisan vendor:publish --provider="Sentixtech\Websoket\WebsoketServiceProvider" --tag="config"
+```
+
+### Configuration File
+
+After publishing, you'll find the configuration file at `config/websoket.php`. Here's an example configuration:
+
+```php
+<?php
+return [
+    // WebSocket Server Configuration
+    'host' => env('WEBSOCKET_HOST', '0.0.0.0'),
+    'port' => env('WEBSOCKET_PORT', 8080),
+    
+    // SSL Configuration
+    'ssl' => [
+        'enabled' => env('WEBSOCKET_SSL', false),
+        'cert_path' => env('WEBSOCKET_SSL_CERT', null),
+        'key_path' => env('WEBSOCKET_SSL_KEY', null),
+    ],
+    
+    // Connection Limits
+    'max_clients' => env('WEBSOCKET_MAX_CLIENTS', 1000),
+    'ping_interval' => env('WEBSOCKET_PING_INTERVAL', 30),
+    
+    // Debugging
+    'debug' => env('WEBSOCKET_DEBUG', false),
+];
+```
+
+### Environment Variables
+
+You can configure the WebSocket server using `.env` file:
+
+```env
+WEBSOCKET_HOST=0.0.0.0
+WEBSOCKET_PORT=8080
+WEBSOCKET_SSL=false
+WEBSOCKET_SSL_CERT=/path/to/cert.pem
+WEBSOCKET_SSL_KEY=/path/to/key.pem
+WEBSOCKET_MAX_CLIENTS=1000
+WEBSOCKET_PING_INTERVAL=30
+WEBSOCKET_DEBUG=false
+```
+
+### Dependency Injection
+
+The WebSocket server can be easily resolved through dependency injection:
+
+```php
+use Sentixtech\Websoket\WebsoketServer;
+
+class WebSocketController extends Controller 
+{
+    public function __construct(WebsoketServer $websocketServer) 
+    {
+        $this->websocketServer = $websocketServer;
+    }
+}
+
+## 🌐 Clustering and Load Balancing
+
+### Current Implementation
+
+The current version of the WebSocket server does not have a built-in clustering mechanism. However, there are several strategies you can implement for scaling and load balancing:
+
+### Clustering Strategies
+
+#### 1. Proxy-Based Load Balancing
+
+Use a reverse proxy like Nginx to distribute WebSocket connections:
+
+```nginx
+http {
+    upstream websocket_cluster {
+        # List of WebSocket server nodes
+        server server1.example.com:8080;
+        server server2.example.com:8080;
+        server server3.example.com:8080;
+    }
+
+    server {
+        listen 80;
+        location /ws {
+            proxy_pass http://websocket_cluster;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+        }
+    }
+}
+```
+
+#### 2. Manual Cluster Implementation
+
+Create a basic cluster manager:
+
+```php
+<?php
+class WebSocketCluster {
+    private $nodes = [];
+    private $loadBalancingStrategy = 'round_robin';
+    private $currentNodeIndex = 0;
+
+    public function __construct(array $nodes, $strategy = 'round_robin') {
+        $this->nodes = $nodes;
+        $this->loadBalancingStrategy = $strategy;
+    }
+
+    public function getNextNode() {
+        switch ($this->loadBalancingStrategy) {
+            case 'round_robin':
+                $node = $this->nodes[$this->currentNodeIndex];
+                $this->currentNodeIndex = 
+                    ($this->currentNodeIndex + 1) % count($this->nodes);
+                return $node;
+            
+            case 'random':
+                return $this->nodes[array_rand($this->nodes)];
+            
+            default:
+                throw new \Exception('Invalid load balancing strategy');
+        }
+    }
+}
+
+// Usage example
+$cluster = new WebSocketCluster([
+    'ws://server1.example.com',
+    'ws://server2.example.com',
+    'ws://server3.example.com'
+], 'round_robin');
+
+$selectedNode = $cluster->getNextNode();
+```
+
+### Recommended Scaling Approaches
+
+1. **Horizontal Scaling**: Deploy multiple WebSocket server instances
+2. **Stateless Design**: Minimize server-side state
+3. **Shared State**: Use Redis or a distributed cache for shared state
+4. **Connection Limits**: Set `max_clients` to prevent overload
+
+### Redis Pub/Sub for Distributed Messaging
+
+```php
+<?php
+use Redis;
+
+class DistributedWebSocket {
+    private $redis;
+
+    public function __construct() {
+        $this->redis = new Redis();
+        $this->redis->connect('127.0.0.1', 6379);
+    }
+
+    public function broadcast($channel, $message) {
+        // Publish message across all nodes
+        $this->redis->publish($channel, json_encode($message));
+    }
+
+    public function subscribe($channel, $callback) {
+        $subscriber = new Redis();
+        $subscriber->connect('127.0.0.1', 6379);
+        $subscriber->subscribe([$channel], $callback);
+    }
+}
+```
+
+### Considerations
+
+- Implement sticky sessions for consistent connections
+- Use WebSocket-compatible load balancers
+- Monitor connection distribution
+- Implement health checks for nodes
+
+### Future Roadmap
+
+We are considering adding native clustering support in future versions. Contributions and feature requests are welcome!
