@@ -1,8 +1,8 @@
 <?php
 
-namespace Sentixtech\Websoket;
+namespace Sentixtech\Websocket;
 
-class WebsoketServer {
+class WebsocketServer {
     protected $server;
     protected $clients = [];
     protected $channels = [];

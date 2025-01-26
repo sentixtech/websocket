@@ -12,8 +12,12 @@ return [
     */
     
     'server' => [
-        'host' => env('WEBSOCKET_HOST', null),
-        'port' => env('WEBSOCKET_PORT', null),
+        'host' => env('WEBSOCKET_HOST', '127.0.0.1'),
+        'port' => env('WEBSOCKET_PORT', 8080),
+        'enabled' => env('WEBSOCKET_ENABLED', true),
+        'max_clients' => env('WEBSOCKET_MAX_CLIENTS', 1000),
+        'ping_interval' => env('WEBSOCKET_PING_INTERVAL', 30),
+        'debug' => env('WEBSOCKET_DEBUG', false),
         'ssl' => [
             'enabled' => env('WEBSOCKET_SSL', false),
             'cert_file' => env('WEBSOCKET_SSL_CERT', null),
@@ -24,65 +28,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Performance Settings
+    | Authentication Settings
     |--------------------------------------------------------------------------
     |
-    | Configure server performance and resource usage.
+    | Configure authentication features.
     |
     */
     
-    'performance' => [
-        'max_clients' => env('WEBSOCKET_MAX_CLIENTS', 1000),
-        'max_connections_per_ip' => env('WEBSOCKET_MAX_CONN_PER_IP', 0), // 0 = unlimited
-        'memory_limit' => env('WEBSOCKET_MEMORY_LIMIT', '128M'),
-        'buffer_size' => env('WEBSOCKET_BUFFER_SIZE', 8192),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Connection Settings
-    |--------------------------------------------------------------------------
-    |
-    | Configure connection behavior and timeouts.
-    |
-    */
-    
-    'connection' => [
-        'ping_interval' => env('WEBSOCKET_PING_INTERVAL', 30),
-        'ping_timeout' => env('WEBSOCKET_PING_TIMEOUT', 60),
-        'disconnect_timeout' => env('WEBSOCKET_DISCONNECT_TIMEOUT', 120),
-        'throttle' => [
-            'enabled' => env('WEBSOCKET_THROTTLE', false),
-            'max_requests' => env('WEBSOCKET_THROTTLE_MAX', 100),
-            'per_seconds' => env('WEBSOCKET_THROTTLE_PER', 60),
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Channel Settings
-    |--------------------------------------------------------------------------
-    |
-    | Default settings for channels. These can be overridden when creating
-    | individual channels.
-    |
-    */
-    
-    'channels' => [
-        'default_options' => [
-            'max_clients' => 0, // 0 means unlimited
-            'max_message_size' => 65536, // in bytes
-            'message_queue_size' => 100,
-            'persistent' => false,
-            'private' => false,
-        ],
-        
-        'reserved_names' => [
-            'system',
-            'admin',
-            'private-*',
-            'presence-*',
-        ],
+    'authentication' => [
+        'enabled' => env('WEBSOCKET_AUTH_ENABLED', false),
     ],
 
     /*
@@ -95,6 +49,8 @@ return [
     */
     
     'security' => [
+        'ssl_cert_path' => env('WEBSOCKET_SSL_CERT_PATH', null),
+        'ssl_key_path' => env('WEBSOCKET_SSL_KEY_PATH', null),
         'allowed_origins' => env('WEBSOCKET_ALLOWED_ORIGINS', '*'),
         'allowed_ips' => env('WEBSOCKET_ALLOWED_IPS', '*'),
         'blocked_ips' => env('WEBSOCKET_BLOCKED_IPS', ''),
@@ -116,6 +72,8 @@ return [
     */
     
     'logging' => [
+        'channel' => env('WEBSOCKET_LOG_CHANNEL', 'daily'),
+        'error_log' => env('WEBSOCKET_ERROR_LOG', storage_path('logs/websocket-errors.log')),
         'enabled' => env('WEBSOCKET_LOGGING', true),
         'level' => env('WEBSOCKET_LOG_LEVEL', 'info'),
         'file' => env('WEBSOCKET_LOG_FILE', storage_path('logs/websocket.log')),
