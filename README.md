@@ -347,35 +347,16 @@ If automatic discovery is disabled, add the service provider to your `config/app
 ```php
 'providers' => [
     // Other Service Providers
-    Sentixtech\Websoket\WebsoketServiceProvider::class,
+    Sentixtech\Websocket\WebsocketServiceProvider::class,
 ],
 ```
 
 ### Configuration Publishing
 
-Use Artisan commands to publish and manage WebSocket configuration:
+To publish the package configuration, run:
 
 ```bash
-# Publish WebSocket configuration file
-php artisan vendor:publish --provider="Sentixtech\Websoket\WebsoketServiceProvider" --tag="config"
-
-# Publish WebSocket service provider
-php artisan make:provider WebsocketServiceProvider
-
-# Generate WebSocket configuration
-php artisan websocket:generate-config
-
-# Start WebSocket server
-php artisan websocket:start
-
-# Stop WebSocket server
-php artisan websocket:stop
-
-# Restart WebSocket server
-php artisan websocket:restart
-
-# Check WebSocket server status
-php artisan websocket:status
+php artisan vendor:publish --provider="Sentixtech\Websocket\WebsocketServiceProvider" --tag="config"
 ```
 
 ### Environment Configuration
@@ -397,7 +378,7 @@ WEBSOCKET_REDIS_PORT=6379
 
 ### Configuration File
 
-After publishing, you'll find the configuration file at `config/websoket.php`. Here's an example configuration:
+After publishing, you'll find the configuration file at `config/websocket.php`. Here's an example configuration:
 
 ```php
 <?php
@@ -442,11 +423,11 @@ WEBSOCKET_DEBUG=false
 The WebSocket server can be easily resolved through dependency injection:
 
 ```php
-use Sentixtech\Websoket\WebsoketServer;
+use Sentixtech\Websocket\WebsocketServer;
 
 class WebSocketController extends Controller 
 {
-    public function __construct(WebsoketServer $websocketServer) 
+    public function __construct(WebsocketServer $websocketServer) 
     {
         $this->websocketServer = $websocketServer;
     }
