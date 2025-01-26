@@ -33,6 +33,29 @@ Add to your `composer.json`:
 }
 ```
 
+## 🚀 Starting the WebSocket Server
+
+### Using Artisan Command
+
+Start the WebSocket server using the following command:
+
+```bash
+php artisan websocket:serve
+```
+
+#### Command Options
+
+You can customize the host and port:
+
+```bash
+# Specify custom host and port
+php artisan websocket:serve --host=127.0.0.1 --port=9000
+```
+
+### Configuration
+
+To customize server settings, modify the configuration in `config/websocket.php`.
+
 ## 🛠️ Basic Setup
 
 ### Server Initialization
