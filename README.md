@@ -363,18 +363,38 @@ php artisan vendor:publish --provider="Sentixtech\Websocket\WebsocketServiceProv
 
 Add WebSocket settings to your `.env` file:
 
-```env
+```ini
 # WebSocket Server Configuration
-WEBSOCKET_HOST=0.0.0.0
+WEBSOCKET_HOST=127.0.0.1
 WEBSOCKET_PORT=8080
-WEBSOCKET_SSL=false
+WEBSOCKET_ENABLED=true
 WEBSOCKET_MAX_CLIENTS=1000
+WEBSOCKET_PING_INTERVAL=30
 WEBSOCKET_DEBUG=false
 
-# Redis Configuration for Distributed Messaging
-WEBSOCKET_REDIS_HOST=127.0.0.1
-WEBSOCKET_REDIS_PORT=6379
+# Authentication and Security
+WEBSOCKET_AUTH_ENABLED=false
+WEBSOCKET_SSL_CERT_PATH=null
+WEBSOCKET_SSL_KEY_PATH=null
+
+# Logging and Monitoring
+WEBSOCKET_LOG_CHANNEL=daily
+WEBSOCKET_ERROR_LOG=storage/logs/websocket-errors.log
 ```
+
+These environment variables allow you to customize your WebSocket server's behavior:
+
+- `WEBSOCKET_HOST`: The IP address to bind the WebSocket server
+- `WEBSOCKET_PORT`: Port number for the WebSocket server
+- `WEBSOCKET_ENABLED`: Enable or disable the WebSocket server
+- `WEBSOCKET_MAX_CLIENTS`: Maximum number of concurrent client connections
+- `WEBSOCKET_PING_INTERVAL`: Interval (in seconds) for sending ping messages
+- `WEBSOCKET_DEBUG`: Enable or disable debug mode
+- `WEBSOCKET_AUTH_ENABLED`: Enable or disable authentication
+- `WEBSOCKET_SSL_CERT_PATH`: Path to SSL certificate (for secure WebSocket connections)
+- `WEBSOCKET_SSL_KEY_PATH`: Path to SSL private key
+- `WEBSOCKET_LOG_CHANNEL`: Laravel log channel for WebSocket logs
+- `WEBSOCKET_ERROR_LOG`: Path to WebSocket error log file
 
 ### Configuration File
 
@@ -408,14 +428,17 @@ return [
 You can configure the WebSocket server using `.env` file:
 
 ```env
-WEBSOCKET_HOST=0.0.0.0
+WEBSOCKET_HOST=127.0.0.1
 WEBSOCKET_PORT=8080
-WEBSOCKET_SSL=false
-WEBSOCKET_SSL_CERT=/path/to/cert.pem
-WEBSOCKET_SSL_KEY=/path/to/key.pem
+WEBSOCKET_ENABLED=true
 WEBSOCKET_MAX_CLIENTS=1000
 WEBSOCKET_PING_INTERVAL=30
 WEBSOCKET_DEBUG=false
+WEBSOCKET_AUTH_ENABLED=false
+WEBSOCKET_SSL_CERT_PATH=null
+WEBSOCKET_SSL_KEY_PATH=null
+WEBSOCKET_LOG_CHANNEL=daily
+WEBSOCKET_ERROR_LOG=storage/logs/websocket-errors.log
 ```
 
 ### Dependency Injection
