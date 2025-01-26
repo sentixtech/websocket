@@ -1,6 +1,6 @@
 {
     "name": "sentixtech/websocket",
-    "version": "1.0.2",
+    "version": "1.0.1",
     "description": "A pure PHP WebSocket server implementation with advanced features",
     "type": "library",
     "license": "MIT",
@@ -34,5 +34,8 @@
                 "Sentixtech\\Websocket\\WebsocketServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "serve": "php -r \"require 'vendor/autoload.php'; \\Sentixtech\\Websocket\\WebsocketServer::start();\""
     }
 }
