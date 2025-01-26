@@ -1,6 +1,6 @@
 {
     "name": "sentixtech/websocket",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "A pure PHP WebSocket server implementation with advanced features",
     "type": "library",
     "license": "MIT",
@@ -8,7 +8,7 @@
     "prefer-stable": true,
     "repositories": [
         {
-            "type": "vcs",
+            "type": "composer",
             "url": "https://github.com/sentixtech/websocket.git"
         }
     ],
