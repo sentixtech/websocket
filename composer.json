@@ -4,8 +4,14 @@
     "description": "A pure PHP WebSocket server implementation with advanced features",
     "type": "library",
     "license": "MIT",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/sentixtech/websocket.git"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Sentixtech\\Websocket\\": "src/"
