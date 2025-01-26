@@ -1,8 +1,11 @@
 {
     "name": "sentixtech/websocket",
+    "version": "1.0.0",
     "description": "A pure PHP WebSocket server implementation with advanced features",
     "type": "library",
     "license": "MIT",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Sentixtech\\Websocket\\": "src/"
@@ -25,7 +28,5 @@
                 "Sentixtech\\Websocket\\WebsoketServiceProvider"
             ]
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
