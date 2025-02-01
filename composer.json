@@ -1,0 +1,28 @@
+{
+    "name": "sentixtech/websocket",
+    "description": "Advanced WebSocket package for Laravel with broadcasting capabilities",
+    "type": "library",
+    "require": {
+        "php": "^8.1",
+        "laravel/framework": "^10.0 || ^11.0",
+        "ext-sockets": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "SentixTech\\WebSocket\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "SentixTech\\WebSocket\\WebSocketServiceProvider"
+            ],
+            "aliases": {
+                "WebSocket": "SentixTech\\WebSocket\\Facades\\WebSocket"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
